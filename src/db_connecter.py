@@ -7,9 +7,11 @@ import pandas as pd
 class DB:
     def __init__(self) -> None:
         load_dotenv()
-        user = os.environ.get('DbUser')
-        pwd = os.environ.get('DbPwd')
-        self.conn = pymysql.connect(host='127.0.0.1', user=user, password=pwd, db='crawleddata', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
+        host = os.environ.get('DB_HOST')
+        user = os.environ.get('DB_USER')
+        pwd = os.environ.get('DB_PASSWORD')
+        dbname = os.environ.get('DB_NAME')
+        self.conn = pymysql.connect(host=host, user=user, password=pwd, db=dbname, charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
         self.cursor = self.conn.cursor()
         print("loaded DB\n")
 
