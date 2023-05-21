@@ -20,7 +20,7 @@ class Crawler:
             service=Service(ChromeDriverManager().install()),
             options=options,
         )
-        print("setted webdriver\n")
+        print("set webdriver\n")
 
     def get_request(self, url, headers=""):
         self.driver.get(url)
@@ -41,10 +41,10 @@ class Crawler:
             if not col is cols[-1]:
                 f.write("|")
         f.write("\n")
-        print("made csv file for saving crawled data\n")
+        print("made txt file for saving crawled data\n")
         return f
 
-    def crawl_0(self, id, url, headers=""):
+    def crawl_1(self, id, url, headers=""):
         soup = self.get_request(url, headers=headers)
 
         table = soup.find("table", attrs={"class":"table table-striped table-hover table-bordered"})
@@ -62,7 +62,7 @@ class Crawler:
             f.write(name+"|"+address+"|"+type+"|"+owner+"\n")            
         f.close()
 
-    def crawl_1(self, id, url, headers=""):
+    def crawl_2(self, id, url, headers=""):
         soup = self.get_request(url, headers=headers)
         frame = soup.find('iframe', attrs={"class":"iframe-class"})
 
@@ -84,7 +84,7 @@ class Crawler:
             f.write(desc.text.replace("\n"," ")+"\n") # 기업 상세 설명 저장
         f.close()        
 
-    def crawl_2(self, idx, url, headers=""):
+    def crawl_3(self, idx, url, headers=""):
         self.get_request(url, headers)
         cookieBtn = self.driver.find_element(By .XPATH, '//*[@id="didomi-notice-agree-button"]').click()
 
