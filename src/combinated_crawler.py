@@ -84,7 +84,7 @@ class Crawler:
             f.write(desc.text.replace("\n"," ")+"\n") # 기업 상세 설명 저장
         f.close()        
 
-    def crawl_3(self, idx, url, headers=""):
+    def crawl_3(self, id, url, headers=""):
         self.get_request(url, headers)
         cookieBtn = self.driver.find_element(By .XPATH, '//*[@id="didomi-notice-agree-button"]').click()
 
@@ -93,7 +93,7 @@ class Crawler:
         
         table_name = "company"
         cols = ["name"]
-        f = self.set_txt(idx, table_name, cols)
+        f = self.set_txt(id, table_name, cols)
         for gridElement in gridElements:
             f.write(gridElement.text+"\n")
         f.close()

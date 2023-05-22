@@ -7,7 +7,7 @@ from apscheduler.schedulers.blocking import BlockingScheduler
 
 scheduler = BlockingScheduler()
 
-@scheduler.scheduled_job('cron', hour='3', minute='30', id='crawler')
+@scheduler.scheduled_job('cron', hour='23', minute='18', id='crawler')
 def runner():
     print("--------")
     print("starting crawler")
@@ -42,7 +42,7 @@ def runner():
             print("finished crawling for " +str(id)+ " website\n")
 
         try:
-            db.insert_data(i)
+            db.insert_data(id)
         except:
             try:
                 db.__init__()
