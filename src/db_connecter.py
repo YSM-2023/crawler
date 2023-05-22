@@ -33,24 +33,36 @@ class DB:
             elif i==1:
                 # cols = line.split(' ')
                 line = line.strip()
-                datas = line.split('|')
-                cols = ",".join(datas)
-                col_len = len(datas)
+                col_names = line.split('|')
+                cols = ",".join(col_names)
+                col_len = len(col_names)
             else:
                 line = line[:-1]
                 datas = line.split('|')
                 query = "INSERT INTO "+table+" ("+cols+") VALUES("
+                select_query = "SELECT id FROM " + table + " WHERE "
                 for j in range(col_len):
+                    # delete duplicate when crawling
                     query = query + "%s"
                     if j==col_len-1:
+                        select_query = select_query + col_names[j] + " = \"" + datas[j] + "\";"
                         query = query + ");"
                     else:
+                        select_query = select_query + col_names[j] + " = \"" + datas[j] + "\" and "
                         query = query + ", "
                 try:
-                    self.cursor.execute(query, tuple(datas))
+                    result = self.cursor.execute(select_query)
+                    print(result)
+                    if result == 0: 
+                        self.cursor.execute(query, tuple(datas))
+                        print("No duplicated data!")
+                    else:
+                        print(str(datas) + "is duplicated!!")
                 except:
                     self.cursor.execute(query, "|".join(datas))
         self.conn.commit()
         print("inserted data to "+table+" table\n")
         # self.connect.close()
 
+db = DB()
+print(db.insert_data(3))
