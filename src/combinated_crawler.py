@@ -29,7 +29,7 @@ class Crawler:
         else:
             self.webpage = requests.get(url, headers=literal_eval(headers))
         soup = BeautifulSoup(self.webpage.content, "html.parser")
-        print("got request from website\n")
+        print("got request from website")
         return soup
 
     def set_txt(self, id, table_name, cols):
@@ -41,7 +41,7 @@ class Crawler:
             if not col is cols[-1]:
                 f.write("|")
         f.write("\n")
-        print("made txt file for saving crawled data\n")
+        print("made txt file for saving crawled data")
         return f
 
     def crawl_1(self, id, url, headers=""):
