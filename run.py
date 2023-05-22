@@ -46,6 +46,7 @@ def runner():
         except:
             try:
                 db.__init__()
+                db.insert_data(id)
             except:
                 err_msg = traceback.format_exc()
                 print("\n\n============error", str(id), "website data inserting")
