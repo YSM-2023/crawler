@@ -1,40 +1,60 @@
 from src.combinated_crawler import Crawler
 from src.db_connecter import DB
 import traceback
+import time
+from apscheduler.schedulers.blocking import BlockingScheduler
 
-crawler = Crawler()
-db = DB()
-website_table = db.read_url()
 
-for i in range(len(website_table)):
-    id = website_table.loc[i, 'id']
-    url = website_table.loc[i, 'url']
-    headers = website_table.loc[i, 'headers']
-    func_name = "crawl_"+str(id)
-    website_crawler = getattr(crawler, func_name)
+scheduler = BlockingScheduler()
 
-    try:
-        website_crawler(id, url, headers)
-    except:
+@scheduler.scheduled_job('cron', hour='3', minute='30', id='crawler')
+def runner():
+    print("--------")
+    print("starting crawler")
+    print("--------\n")
+
+    crawler = Crawler()
+    db = DB()
+    website_table = db.read_url()
+
+    for i in range(len(website_table)):
+        id = website_table.loc[i, 'id']
+        url = website_table.loc[i, 'url']
+        headers = website_table.loc[i, 'headers']
+        func_name = "crawl_"+str(id)
+        website_crawler = getattr(crawler, func_name)
+
         try:
-            crawler.__init__()
             website_crawler(id, url, headers)
         except:
-            err_msg = traceback.format_exc()
-            print("\n\n============error", str(id), "website crawling")
-            print(err_msg)
-            print("============\n\n")
-            continue
+            try:
+                crawler.__init__()
+                website_crawler(id, url, headers)
+            except:
+                err_msg = traceback.format_exc()
+                print("\n\n============error", str(id), "website crawling")
+                print(err_msg)
+                print("============\n\n")
+                continue
+            else:
+                print("finished crawling for " +str(id)+ " website\n")           
         else:
-            print("finished crawling for " +str(id)+ " website\n")           
-    else:
-        print("finished crawling for " +str(id)+ " website\n")
+            print("finished crawling for " +str(id)+ " website\n")
 
-    try:
-        db.insert_data(i)
-    except:
         try:
-            db.__init__()
+            db.insert_data(i)
         except:
-            err_msg = traceback.format_exc()
-            continue           
+            try:
+                db.__init__()
+            except:
+                err_msg = traceback.format_exc()
+                print("\n\n============error", str(id), "website data inserting")
+                print(err_msg)
+                print("============\n\n")
+                continue           
+    
+    print("--------")
+    print("finishing crawler")
+    print("--------\n")
+
+scheduler.start()
